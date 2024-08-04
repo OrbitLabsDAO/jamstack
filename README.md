@@ -3,7 +3,7 @@
 npm install
 ./build.sh
 
-this will create a folder called \_site with your filES in it
+this will create a folder called \_site with your files in it
 
 ## ABOUT
 
