@@ -13,31 +13,16 @@ getData = async () => {
   return res.body;
 };
 
-//at this moment you can either have apiData or local content, i think that is enough for me
-
+let remoteData = [];
 //api call
-// if (resArray.length === 0) resArray = await getData();
-//fake it until you make it we dont want to do a api call but we do want to test the rendering so there we have it.
-
-//local content
-const apiData = [
-  {
-    id: 1,
-    title: "First Post",
-    content: "This is the content of the first post.",
-  },
-  {
-    id: 2,
-    title: "Second Post",
-    content: "This is the content of the second post.",
-  },
-  {
-    id: 3,
-    title: "Third Post",
-    content: "This is the content of the third post.",
-  },
-  // Add more objects as needed
-];
+// if (remoteData.length === 0) remoteData = await getData();
+//local data
+const testList = [{ name: "wah", title: "gah" }];
+//create the api data to pass back
+const apiData = {
+  testList: testList,
+  remoteData: remoteData,
+};
 
 module.exports = async () => {
   // Simulate async operation (e.g., fetching from an API)
