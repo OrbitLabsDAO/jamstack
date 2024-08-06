@@ -25,15 +25,13 @@ if (fs.existsSync("./_data/api.js")) {
     try {
       getapiData = require("./_data/api.js");
       apiData = await getapiData(); // Call getapiData asynchronously
-      console.log(apiData);
-      processTemplates(); // Proceed with template processing only after data is fetched
     } catch (error) {
       console.error("Error fetching API data:", error);
     }
   })();
-} else {
-  processTemplates();
 }
+// Proceed with template processing
+processTemplates();
 
 function processTemplates() {
   const sourceFolder = "./_source";
