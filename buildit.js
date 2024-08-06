@@ -10,20 +10,29 @@ const compressAssets = args.includes("compress");
 const environment = args.includes("prod") ? "production" : "local";
 
 // Load environment variables
-const getEnvConfig = require("./_data/env.js");
-const env = getEnvConfig(environment);
+//check if _data/env.js exists and not set a blank env object
+let getEnvConfig;
+let env = {};
+if (!fs.existsSync("./_data/env.js")) {
+  getEnvConfig = require("./_data/env.js");
+  env = getEnvConfig(environment);
+}
 
-// Fetch API data
-const getapiData = require("./_data/api.js");
+let getapiData;
 let apiData = [];
-(async () => {
-  try {
-    apiData = await getapiData(); // Call getapiData asynchronously
-    processTemplates(); // Proceed with template processing only after data is fetched
-  } catch (error) {
-    console.error("Error fetching API data:", error);
-  }
-})();
+if (!fs.existsSync("./_data/api.js")) {
+  (async () => {
+    try {
+      apiData = await getapiData(); // Call getapiData asynchronously
+      processTemplates(); // Proceed with template processing only after data is fetched
+    } catch (error) {
+      console.error("Error fetching API data:", error);
+    }
+  })();
+
+  // Fetch API data
+  const getapiData = require("./_data/api.js");
+}
 
 function processTemplates() {
   const sourceFolder = "./_source";
@@ -175,9 +184,13 @@ function processTemplates() {
           let finalContent;
 
           if (frontMatter.layout) {
+            //check ig frontMatter.layout has a .njk and if it does do not add it to the end
+            if (!frontMatter.layout.includes(".njk")) {
+              frontMatter.layout = frontMatter.layout + ".njk";
+            }
             const layoutFilePath = path.join(
               includesFolder,
-              frontMatter.layout + ".njk"
+              frontMatter.layout
             );
             const layoutData = await fs.promises.readFile(
               layoutFilePath,
