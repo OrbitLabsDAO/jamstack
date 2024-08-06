@@ -77,7 +77,7 @@ permalink: /work/{{ contentarray.pageName }}/
 
 ## TODO
 
-fix api data so we can use the content object in front matter and not apiData as we may have issues when apiData and local data at once.
-check the API call works in the getdata function, it appears to be calling the wrong function.
+fix it if there is no api.js rendering static pages work
+fix api data so we can use the content object in front matter and not apiData as we may have issues when apiData and local data at once. (i may be ok with this)
 permalink: /work/{{ contentarray.title }}/
 outputFolder: work

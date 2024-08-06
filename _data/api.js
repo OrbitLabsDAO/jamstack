@@ -13,9 +13,14 @@ getData = async () => {
   return res.body;
 };
 
+//at this moment you can either have apiData or local content, i think that is enough for me
+
+//api call
 // if (resArray.length === 0) resArray = await getData();
 //fake it until you make it we dont want to do a api call but we do want to test the rendering so there we have it.
-const testArray = [
+
+//local content
+const apiData = [
   {
     id: 1,
     title: "First Post",
@@ -36,5 +41,5 @@ const testArray = [
 
 module.exports = async () => {
   // Simulate async operation (e.g., fetching from an API)
-  return testArray;
+  return apiData;
 };
