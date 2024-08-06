@@ -13,25 +13,22 @@ const environment = args.includes("prod") ? "production" : "local";
 //check if _data/env.js exists and not set a blank env object
 let getEnvConfig;
 let env = {};
-if (!fs.existsSync("./_data/env.js")) {
+if (fs.existsSync("./_data/env.js")) {
   getEnvConfig = require("./_data/env.js");
   env = getEnvConfig(environment);
 }
 
 let getapiData;
 let apiData = [];
-if (!fs.existsSync("./_data/api.js")) {
+if (fs.existsSync("./_data/api.js")) {
   (async () => {
     try {
-      apiData = await getapiData(); // Call getapiData asynchronously
+      //apiData = await getapiData(); // Call getapiData asynchronously
       processTemplates(); // Proceed with template processing only after data is fetched
     } catch (error) {
       console.error("Error fetching API data:", error);
     }
   })();
-
-  // Fetch API data
-  const getapiData = require("./_data/api.js");
 }
 
 function processTemplates() {
