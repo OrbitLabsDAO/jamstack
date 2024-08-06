@@ -10,7 +10,7 @@ this will create a folder called \_site with your website in it
 Jamstack is a complete rip off https://www.11ty.dev but scaled way back, if it best used
 for small sites hosted in a serverless nature (we use cloudflare).
 
-It is small and fast have a look at buildit.js (thats the whole thing) it is 254 lines of code
+It is small and fast have a look at buildit.js (thats the whole thing) it is 254 lines of code (7k) and sits snugly in any CD / CI infrastructure.
 
 ## USAGE
 
@@ -26,7 +26,7 @@ nunjucks templates : https://mozilla.github.io/nunjucks/templating.html
 frontmatter : https://markdoc.dev/docs/frontmatter
 API : can pull data from remote sources
 JSON : you can load data into into JSON objects into the api.js and they will be available in an array called content.
-supports multiple outputs in front matter outputFolder: user,projects will create users/index.html & projects/index.html userful if you are doing Ajax calls to render the data into tables for admins and such
+supports multiple outputs in front matter outputFolder: user,projects will create users/index.html & projects/index.html useful if you are doing Ajax calls to render the data into tables for admins and such
 
 ## FRONT MATTER
 
