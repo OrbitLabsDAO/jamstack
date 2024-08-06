@@ -77,7 +77,6 @@ permalink: /work/{{ contentarray.pageName }}/
 
 ## TODO
 
-fix it if there is no api.js rendering static pages work
-fix api data so we can use the content object in front matter and not apiData as we may have issues when apiData and local data at once. (i may be ok with this)
+fix it if there is no api.js rendering single static pages work
 permalink: /work/{{ contentarray.title }}/
 outputFolder: work
