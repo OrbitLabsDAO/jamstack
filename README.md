@@ -77,6 +77,5 @@ permalink: /work/{{ contentarray.pageName }}/
 
 ## TODO
 
-fix it if there is no api.js rendering single static pages work
 permalink: /work/{{ contentarray.title }}/
 outputFolder: work
