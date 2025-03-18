@@ -25,6 +25,10 @@ if (fs.existsSync("./_data/api.js")) {
     try {
       getapiData = require("./_data/api.js");
       apiData = await getapiData(); // Call getapiData asynchronously
+      //this is dumb JS why do we have to unwrap the json here.
+      apiData = apiData.apiData
+      //debug
+      //console.log(JSON.stringify(apiData[0].work[0], null, 2));
     } catch (error) {
       console.error("Error fetching API data:", error);
     }
@@ -88,6 +92,7 @@ function processTemplates() {
     console.log(`Successfully copied assets folder to ${destAssetsFolder}`);
   }
 
+
   async function generateContent(
     dataArray,
     size,
@@ -98,25 +103,22 @@ function processTemplates() {
     outputFolders,
     isIndexFile
   ) {
-    // If dataArray is not empty, handle pagination
     if (dataArray && dataArray.length > 0) {
       const totalPages = Math.ceil(dataArray.length / size);
       for (let i = 0; i < totalPages; i++) {
         const pageData = dataArray.slice(i * size, (i + 1) * size);
-
+  
         for (const pageItem of pageData) {
           const permalink = nunjucks.renderString(permalinkTemplate, {
             [alias]: pageItem,
           });
-
-          // Render content for this page
-
+  
           const pageContent = nunjucks.renderString(layout, {
             ...env,
-            content: pageItem, // Pass pageItem as 'content'
-            apiData, // Ensure apiData is correctly passed
+            content: pageItem,
+            apiData,
           });
-
+  
           for (const outputFolder of outputFolders) {
             const outputPath = path.join(
               destBaseFolder,
@@ -124,43 +126,60 @@ function processTemplates() {
               permalink,
               "index.html"
             );
+  
             const outputDir = path.dirname(outputPath);
-
-            await fs.promises.mkdir(outputDir, { recursive: true });
-            await fs.promises.writeFile(outputPath, pageContent, "utf8");
-            console.log(`Successfully created ${outputPath}`);
+  
+            // Check if the file already exists before creating it
+            if (!fs.existsSync(outputPath)) {
+              await fs.promises.mkdir(outputDir, { recursive: true });
+              await fs.promises.writeFile(outputPath, pageContent, "utf8");
+              console.log(`✅ Created ${outputPath}`);
+            } else {
+              console.log(`❌ Skipped ${outputPath} (File already exists)`);
+            }
           }
         }
       }
     } else {
-      // Handle case with no dataArray (single page or index file)
       for (const outputFolder of outputFolders) {
         let outputPath;
+  
         if (isIndexFile) {
+          // Homepage index
           outputPath = path.join(destBaseFolder, "index.html");
+          console.log(outputPath);
         } else {
-          outputPath = path.join(
-            destBaseFolder,
-            outputFolder,
-            permalinkTemplate,
-            "index.html"
-          );
+          const renderedPermalink = nunjucks.renderString(permalinkTemplate, env).trim();
+  
+          // Clean case: render work.njk as _site/work/index.html
+          if (!renderedPermalink || renderedPermalink === "/" || renderedPermalink === "index") {
+            outputPath = path.join(destBaseFolder, outputFolder, "index.html");
+          } else {
+            outputPath = path.join(destBaseFolder, outputFolder, renderedPermalink, "index.html");
+          }
         }
+  
         const outputDir = path.dirname(outputPath);
-
-        // Render content for single page or index file
         const pageContent = nunjucks.renderString(layout, {
           ...env,
-          content: {}, // No specific content if no pages
-          apiData, // Pass API data to layout
+          content: {},
+          apiData,
         });
-
-        await fs.promises.mkdir(outputDir, { recursive: true });
-        await fs.promises.writeFile(outputPath, pageContent, "utf8");
-        console.log(`Successfully created ${outputPath}`);
+  
+        // Check if the file already exists before creating it
+        if (!fs.existsSync(outputPath)) {
+          await fs.promises.mkdir(outputDir, { recursive: true });
+          await fs.promises.writeFile(outputPath, pageContent, "utf8");
+          console.log(`✅ Created ${outputPath}`);
+        } else {
+          //we have this here as nested json rendering was creating an index file in the root, it is a bug we should fix later as it is doing extra rendering but for now this works
+          console.log(`❌ Skipped ${outputPath} (File already exists)`);
+        }
       }
     }
   }
+  
+
 
   fs.readdir(sourceFolder, async (err, files) => {
     if (err) {
