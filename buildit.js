@@ -1,16 +1,16 @@
+// build.js
 const fs = require("fs");
 const path = require("path");
 const nunjucks = require("nunjucks");
 const matter = require("gray-matter");
 
-// Get the delete and compress flags from command line arguments
+// Get command-line flags
 const args = process.argv.slice(2);
 const deleteDestFolder = args.includes("delete");
 const compressAssets = args.includes("compress");
 const environment = args.includes("prod") ? "production" : "local";
 
-// Load environment variables
-//check if _data/env.js exists and not set a blank env object
+// Load env config
 let getEnvConfig;
 let env = {};
 if (fs.existsSync("./_data/env.js")) {
@@ -18,63 +18,55 @@ if (fs.existsSync("./_data/env.js")) {
   env = getEnvConfig(environment);
 }
 
+// Load API data and continue build
 let getapiData;
 let apiData = [];
+
 if (fs.existsSync("./_data/api.js")) {
   (async () => {
     try {
       getapiData = require("./_data/api.js");
-      apiData = await getapiData(); // Call getapiData asynchronously
-      //this is dumb JS why do we have to unwrap the json here.
-      apiData = apiData.apiData
-      //debug
-      //console.log(JSON.stringify(apiData[0].work[0], null, 2));
+      apiData = await getapiData(env);
+      apiData = apiData.apiData || apiData;
+      processTemplates();
     } catch (error) {
-      console.error("Error fetching API data:", error);
+      console.error("❌ Error fetching API data:", error);
     }
   })();
+} else {
+  processTemplates();
 }
-// Proceed with template processing
-processTemplates();
 
 function processTemplates() {
   const sourceFolder = "./_source";
   const includesFolder = "./_includes";
   const destBaseFolder = "./_site";
-  const assetsFolder = "./_source/assets";
+  const assetsFolder = path.join(sourceFolder, "assets");
 
-  // Setup Nunjucks environment
+  // Delete `_site` folder if delete flag is passed
+  if (deleteDestFolder) {
+    try {
+      console.log("🗑 Deleting _site folder before build...");
+      fs.rmSync(destBaseFolder, { recursive: true, force: true });
+    } catch (err) {
+      console.error("❌ Failed to delete _site folder:", err);
+    }
+  }
+
+  // Ensure destination folder exists
+  if (!fs.existsSync(destBaseFolder)) {
+    fs.mkdirSync(destBaseFolder, { recursive: true });
+  }
+
+  // Configure Nunjucks
   nunjucks.configure([sourceFolder, includesFolder], {
     autoescape: false,
     noCache: true,
   });
 
-  function deleteFolder(folderPath) {
-    if (fs.existsSync(folderPath)) {
-      fs.readdirSync(folderPath).forEach((file) => {
-        const currentPath = path.join(folderPath, file);
-        if (fs.lstatSync(currentPath).isDirectory()) {
-          deleteFolder(currentPath);
-        } else {
-          fs.unlinkSync(currentPath);
-        }
-      });
-      fs.rmdirSync(folderPath);
-    }
-  }
-
-  if (deleteDestFolder) {
-    deleteFolder(destBaseFolder);
-  }
-
-  if (!fs.existsSync(destBaseFolder)) {
-    fs.mkdirSync(destBaseFolder, { recursive: true });
-  }
-
+  // Utility: Copy folder
   function copyDirectory(src, dest) {
-    if (!fs.existsSync(dest)) {
-      fs.mkdirSync(dest, { recursive: true });
-    }
+    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
     fs.readdirSync(src).forEach((item) => {
       const srcPath = path.join(src, item);
       const destPath = path.join(dest, item);
@@ -86,13 +78,14 @@ function processTemplates() {
     });
   }
 
+  // Copy assets
   if (fs.existsSync(assetsFolder)) {
     const destAssetsFolder = path.join(destBaseFolder, "assets");
     copyDirectory(assetsFolder, destAssetsFolder);
-    console.log(`Successfully copied assets folder to ${destAssetsFolder}`);
+    console.log(`✅ Copied assets folder to ${destAssetsFolder}`);
   }
 
-
+  // Generate content with/without pagination
   async function generateContent(
     dataArray,
     size,
@@ -107,18 +100,18 @@ function processTemplates() {
       const totalPages = Math.ceil(dataArray.length / size);
       for (let i = 0; i < totalPages; i++) {
         const pageData = dataArray.slice(i * size, (i + 1) * size);
-  
         for (const pageItem of pageData) {
+          //Skip rendering if pageName is 'index' to avoid unwanted /root/index.html
+          if (pageItem.pageName === "index") continue;
+
           const permalink = nunjucks.renderString(permalinkTemplate, {
             [alias]: pageItem,
           });
-  
           const pageContent = nunjucks.renderString(layout, {
             ...env,
             content: pageItem,
             apiData,
           });
-  
           for (const outputFolder of outputFolders) {
             const outputPath = path.join(
               destBaseFolder,
@@ -126,16 +119,13 @@ function processTemplates() {
               permalink,
               "index.html"
             );
-  
             const outputDir = path.dirname(outputPath);
-  
-            // Check if the file already exists before creating it
             if (!fs.existsSync(outputPath)) {
               await fs.promises.mkdir(outputDir, { recursive: true });
               await fs.promises.writeFile(outputPath, pageContent, "utf8");
               console.log(`✅ Created ${outputPath}`);
             } else {
-              console.log(`❌ Skipped ${outputPath} (File already exists)`);
+              console.log(`⚠️ Skipped ${outputPath} (already exists)`);
             }
           }
         }
@@ -143,127 +133,98 @@ function processTemplates() {
     } else {
       for (const outputFolder of outputFolders) {
         let outputPath;
-  
         if (isIndexFile) {
-          // Homepage index
           outputPath = path.join(destBaseFolder, "index.html");
-          console.log(outputPath);
         } else {
-          const renderedPermalink = nunjucks.renderString(permalinkTemplate, env).trim();
-  
-          // Clean case: render work.njk as _site/work/index.html
-          if (!renderedPermalink || renderedPermalink === "/" || renderedPermalink === "index") {
-            outputPath = path.join(destBaseFolder, outputFolder, "index.html");
-          } else {
-            outputPath = path.join(destBaseFolder, outputFolder, renderedPermalink, "index.html");
-          }
+          const renderedPermalink = nunjucks
+            .renderString(permalinkTemplate, env)
+            .trim();
+          outputPath =
+            !renderedPermalink ||
+            renderedPermalink === "/" ||
+            renderedPermalink === "index"
+              ? path.join(destBaseFolder, outputFolder, "index.html")
+              : path.join(
+                  destBaseFolder,
+                  outputFolder,
+                  renderedPermalink,
+                  "index.html"
+                );
         }
-  
         const outputDir = path.dirname(outputPath);
         const pageContent = nunjucks.renderString(layout, {
           ...env,
           content: {},
           apiData,
         });
-  
-        // Check if the file already exists before creating it
         if (!fs.existsSync(outputPath)) {
           await fs.promises.mkdir(outputDir, { recursive: true });
           await fs.promises.writeFile(outputPath, pageContent, "utf8");
           console.log(`✅ Created ${outputPath}`);
         } else {
-          //we have this here as nested json rendering was creating an index file in the root, it is a bug we should fix later as it is doing extra rendering but for now this works
-          console.log(`❌ Skipped ${outputPath} (File already exists)`);
+          console.log(`⚠️ Skipped ${outputPath} (already exists)`);
         }
       }
     }
   }
-  
 
-
+  // Process all .njk files
   fs.readdir(sourceFolder, async (err, files) => {
-    if (err) {
-      console.error("Error reading the source folder:", err);
-      return;
-    }
+    if (err) return console.error("❌ Error reading source folder:", err);
 
     for (const file of files) {
       const sourceFilePath = path.join(sourceFolder, file);
       if (path.extname(file) === ".njk") {
         try {
-          const data = await fs.promises.readFile(sourceFilePath, "utf8");
+          const raw = await fs.promises.readFile(sourceFilePath, "utf8");
+          const { content, data: frontMatter } = matter(raw);
 
-          // Parse the front matter
-          const parsed = matter(data);
-          const content = parsed.content;
-          const frontMatter = parsed.data;
-
-          //Debug output for front matter
-          //console.log("Front Matter:", frontMatter);
-
-          let finalContent;
-
+          let finalContent = content;
           if (frontMatter.layout) {
-            //check ig frontMatter.layout has a .njk and if it does do not add it to the end
-            if (!frontMatter.layout.includes(".njk")) {
-              frontMatter.layout = frontMatter.layout + ".njk";
-            }
-            const layoutFilePath = path.join(
+            const layoutPath = path.join(
               includesFolder,
-              frontMatter.layout
+              frontMatter.layout.endsWith(".njk")
+                ? frontMatter.layout
+                : frontMatter.layout + ".njk"
             );
-            const layoutData = await fs.promises.readFile(
-              layoutFilePath,
-              "utf8"
-            );
-
-            // Render the layout with the page content
+            const layoutData = await fs.promises.readFile(layoutPath, "utf8");
             finalContent = nunjucks.renderString(layoutData, {
               ...env,
-              content: content,
-              apiData, // Pass API data to layout
+              content,
+              apiData,
             });
           } else {
-            // Render content without layout
             finalContent = nunjucks.renderString(content, {
               ...env,
-              apiData, // Pass API data to template
+              apiData,
             });
           }
 
-          // Check for pagination
+          const outputFolders = (
+            frontMatter.outputFolder || path.basename(file, ".njk")
+          )
+            .split(",")
+            .map((f) => f.trim());
 
           if (frontMatter.pagination) {
-            const paginationData = eval(frontMatter.pagination.data); // Consider safer alternatives if possible
+            const paginationData = eval(frontMatter.pagination.data); // ⚠ Consider making this safer
             const size = frontMatter.pagination.size || 1;
             const alias = frontMatter.pagination.alias || "contentarray";
-            const permalinkTemplate = frontMatter.permalink || "/";
-            const outputFolders = frontMatter.outputFolder
-              ? frontMatter.outputFolder
-                  .split(",")
-                  .map((folder) => folder.trim())
-              : [path.basename(file, ".njk")];
-
+            const permalink = frontMatter.permalink || "/";
             await generateContent(
               paginationData,
               size,
               alias,
-              permalinkTemplate,
+              permalink,
               finalContent,
               env,
               outputFolders,
               file === "index.njk"
             );
           } else {
-            const outputFolders = frontMatter.outputFolder
-              ? frontMatter.outputFolder
-                  .split(",")
-                  .map((folder) => folder.trim())
-              : [path.basename(file, ".njk")];
-
             await generateContent(
               [],
-              1, // Single page
+              1,
               "content",
               frontMatter.permalink || "/",
               finalContent,
@@ -273,15 +234,20 @@ function processTemplates() {
             );
           }
         } catch (err) {
-          console.error("Error processing the Nunjucks file:", err);
+          console.error(`❌ Error processing ${file}:`, err);
         }
       }
     }
 
+    // Compress assets if flag enabled
     if (compressAssets) {
-      const compress = require("compression-library"); // Replace with your compression tool
-      compress(assetsFolder);
-      console.log("Assets compressed successfully");
+      try {
+        const compress = require("compression-library"); // Replace with your compression lib
+        compress(assetsFolder);
+        console.log("✅ Assets compressed successfully");
+      } catch (err) {
+        console.error("❌ Asset compression failed:", err);
+      }
     }
   });
 }
