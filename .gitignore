@@ -1,6 +1,5 @@
 _site
 _includes
-_source
 node_modules/
 package-lock.json
 .DS_Store
