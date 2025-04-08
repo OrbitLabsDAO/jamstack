@@ -8,29 +8,38 @@ get_current_time_in_ms() {
     date +%s%3N | awk '{ printf "%d\n", $1 }'
 }
 
-if [ "$ACTION" = "init" ]; then
+ACTION="${1:-local}" # Default to "build" if no parameter is passed
+
+if [ "ACTION" = "init" ]; then
+    echo "Building scaffolding..."
+    rm -rf _site
     if [ ! -d "_includes" ]; then
+        echo "Created _includes folder"
         mkdir _includes
     fi
 
     if [ ! -d "_source" ]; then
+        echo "Created _source folder"
         mkdir _source
     fi
 
     #copy _env to .env
     if [ ! -f ".env" ]; then
+        echo "Created .env file"
         cp _env .env
     fi
 
     if [ ! -f ".dev.vars" ]; then
+        echo "Created .dev.vars file"
         cp _.dev.vars .dev.vars
     fi
 
     #copy _wrangler.toml to wrangler.toml
     if [ ! -f "wrangler.toml" ]; then
+        echo "Created .dev.vars file"
         cp _wrangler.toml wrangler.toml
     fi
-
+     echo "Building scaffolding complete..."
     exit   
 fi
 
@@ -41,14 +50,14 @@ start_time=$(get_current_time_in_ms)
 echo "Starting build script"
 
 # Check if 'delete' is passed as an argument
-if [[ "$@" == *"delete"* ]]; then
+if [[ "ACTION" == *"delete"* ]]; then
     echo "Deleting _site folder..."
     rm -rf _site
     echo "_site folder deleted."
 fi
 
 # Execute the build script with any arguments passed to this script
-node buildit.js "$@"
+node buildit.js "ACTION"
 
 # Capture the end time in milliseconds
 end_time=$(get_current_time_in_ms)
