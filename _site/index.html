@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Crowdfund</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <!-- Favicons -->
+  <link href="/assets/images/favicon.png" rel="icon">
+  <link href="/assets/images/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+  <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Libraries CSS Files -->
+  <link href="/assets/css/font-awesome.min.css" rel="stylesheet">
+  <link href="/assets/css/animate.min.css" rel="stylesheet">
+  <link href="/assets/css/ionicons.min.css" rel="stylesheet">
+  <link href="/assets/js/owl/assets/owl.carousel.min.css" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="/assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <script type="text/javascript">
+    var apiUrl ="http://localhost:8789/api/";
+
+  </script>
+
+  <div class="click-closed"></div>
+
+
+  <!--/ Nav Star /-->
+  <nav class="navbar navbar-default navbar-trans navbar-expand-lg fixed-top">
+    <div class="container">
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarDefault"
+        aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <a class="navbar-brand text-brand" href="index.html">Building<span class="color-b">Block</span></a>
+     
+      
+
+    </div>
+  </nav>
+  <!--/ Nav End /-->
+
+     
+
+  <!--/ Intro Single star /-->
+  <section class="intro-single">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-lg-8">
+          <div class="title-single-box">
+            <h1 class="title-single" id="name"></h1>
+            <span class="color-text-a" id="address"></span>
+          </div>
+        </div>
+        <div class="col-md-12 col-lg-4">
+         
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ Intro Single End /-->
+  <!--/ Property Single Star /-->
+  <section class="property-single nav-arrow-b">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div id="property-single-carousel" class="owl-carousel owl-arrow gallery-property">
+            
+          </div>
+          <div class="row justify-content-between">
+            <div class="col-md-5 col-lg-4">
+              <div class="property-price d-flex justify-content-center foo">
+                <div class="card-header-c d-flex">
+                  <div class="card-box-ico">
+                    <span class="ion-money" id="currency"></span>
+                  </div>
+                  <div class="card-title-c align-self-center">
+                    <h5 class="title-c" id="price"></h5>
+                  </div>
+                </div>
+              </div>
+              <div class="property-summary">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="title-box-d section-t4">
+                      <h3 class="title-d">Quick Summary</h3>
+                    </div>
+                  </div>
+                </div>
+                <div class="summary-list">
+                  <ul class="list">
+                    <li class="d-flex justify-content-between">
+                      <strong>Property ID:</strong>
+                      <span id="propertyId"></span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <strong>Location:</strong>
+                      <span id="location"></span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <strong>Property Type:</strong>
+                      <span id="type"></span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <strong>Status:</strong>
+                      <span id="status"></span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <strong>Area:</strong>
+                      <span id="area">
+                        <sup>2</sup>
+                      </span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <strong>Beds:</strong>
+                      <span id="beds"></span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <strong>Baths:</strong>
+                      <span id="baths"></span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                      <strong>Garage:</strong>
+                      <span id="garage"></span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-7 col-lg-7 section-md-t3">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="title-box-d">
+                    <h3 class="title-d">Property Description</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="property-description">
+                <p class="description color-text-a" id="description">
+                 
+                </p>
+                
+              </div>
+              <div class="row section-t3">
+                <div class="col-sm-12">
+                  <div class="title-box-d">
+                    <h3 class="title-d">Amenities</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="amenities-list color-text-a">
+                <ul class="list-a no-margin" id="amenities">
+                 
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-10 offset-md-1">
+          <ul class="nav nav-pills-a nav-pills mb-3 section-t3" id="pills-tab" role="tablist">
+           
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-map-tab" data-toggle="pill" href="#pills-map" role="tab" aria-controls="pills-map"
+                aria-selected="false">Location</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+           
+            <div class="tab-pane show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
+              <iframe id="googlemap" src=""
+                width="100%" height="460" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 d-none" id="crowdfund" >
+          <div class="row section-t3">
+            <div class="col-sm-12">
+              <div class="title-box-d">
+                <h3 class="title-d">LET ME IN</h3>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            
+            <div class="col-md-6 col-lg-6">
+              <div class="property-agent">
+                <h4 class="title-agent">So you want to invest</h4>
+                <p class="color-text-a">
+                  Simply enter the amount you would like to invest and you will be taking to the payment portal. 
+                </p>
+                <ul class="list-unstyled">
+                  <li class="d-flex justify-content-between">
+                    <strong>Total Tranches:</strong>
+                    <span class="color-text-a" id="totaltranches"></span>
+                  </li>
+                  <li class="d-flex justify-content-between">
+                    <strong>Amount Sold:</strong>
+                    <span class="color-text-a" id="tranchesold"></span>
+                  </li>
+                  <li class="d-flex justify-content-between">
+                    <strong>Amount left:</strong>
+                    <span class="color-text-a" id="tranchesleft"></span>
+                  </li>
+                  <li class="d-flex justify-content-between">
+                    <strong>Price per Tranche:</strong>
+                    <span class="color-text-a" id="tranchecost">$1000</span>
+                  </li>
+                </ul>
+                
+              </div>
+            </div>
+            <div class="col-md-12 col-lg-6">
+              <div class="property-contact">
+                <form class="form-a">
+                  <div class="row">
+                    <div class="col-md-12 mb-1">
+                      <div class="form-group">
+                        <input type="text" class="form-control form-control-lg form-control-a" id="inputAmount"
+                          placeholder="Tranches" required>
+                      </div>
+                    </div>
+                    <div class="col-md-12 mb-1">
+                      <div class="form-group">
+                        <input type="email" class="form-control form-control-lg form-control-a" id="inputEmail"
+                          placeholder="Email" required>
+                      </div>
+                    </div>
+                    <div class="col-md-12 mb-1">
+                      <div class="form-group">
+                        
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <a href="javascript:submitTranche()"  type="submit" class="btn btn-a">SHUT UP AND TAKE MY MONEY</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+    <script type="text/javascript"> 
+    let property;
+let propertyId;
+
+let whenDocumentReady = (f) => {
+    /in/.test(document.readyState) ? setTimeout('whenDocumentReady(' + f + ')', 9) : f()
+}
+
+let submitTranche = () => {
+    /*
+    	todo 
+
+    	tranches check 2 many
+
+    */
+    console.log(property)
+    const tLeft = property.tranches - property.tranchesSold
+    const amount = document.getElementById('inputAmount').value;
+    const email = document.getElementById('inputEmail').value;
+    if ((amount == "") || (amount > tLeft) || (amount == 0)) {
+        alert('please enter a valid tranche amount');
+        return;
+    }
+    const res = validateEmail(email)
+    if (res == false) {
+        alert('please enter a valid email');
+        return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', apiUrl + `properties/crowdfund/?tranches=${amount}&email=${email}&id=${propertyId}`, true);
+    xhr.onload = function() {
+        //check it was ok
+        if (this.status === 200) {
+            alert('thanks we will contact you soon.')
+        }
+    };
+    xhr.send();
+
+
+}
+
+//this fucntion validates an email address.
+let validateEmail = (email) => {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+};
+
+let formatCurencyUSD = (number, digits = 2) => {
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: digits
+    })
+    let currency = formatter.format(number)
+    return (currency)
+}
+
+//this function checks if an element exits
+let checkElement = (element) => {
+    let checkedElement = document.getElementById(element);
+    //If it isn't "undefined" and it isn't "null", then it exists.
+    if (typeof(checkedElement) != 'undefined' && checkedElement != null) {
+        return (true)
+    } else {
+        return (false)
+    }
+}
+
+let getUrlParamater = (param) => {
+    let searchParams = new URLSearchParams(window.location.search)
+    let res = searchParams.has(param) // true
+    if (res != false)
+        return (searchParams.get(param))
+    else
+        return ("");
+
+}
+
+
+whenDocumentReady(isReady = () => {
+
+
+})
+</script>
+
+  <!--/ Property Single End /-->
+
+    
+  <!--/ footer Star /-->
+  <section class="section-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-4">
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!--/ Footer End /-->
+
+  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+  <div id="preloader"></div>
+
+  <!-- JavaScript Libraries -->
+  <script src="/assets/js/jquery.min.js"></script>
+  <script src="/assets/js/jquery-migrate.min.js"></script>
+  <script src="/assets/js/popper.min.js"></script>
+  <script src="/assets/js/bootstrap.min.js"></script>
+  <script src="/assets/js/easing.min.js"></script>
+  <script src="/assets/js/owl/owl.carousel.min.js"></script>
+  <script src="/assets/js/scrollreveal.min.js"></script>
+  <!-- Template Main Javascript File -->
+  <script src="/assets/js/main.js"></script>
+  
+</body>
+</html>
