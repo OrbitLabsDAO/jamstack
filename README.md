@@ -15,10 +15,16 @@ It is small and fast have a look at buildit.js (thats the whole thing) it is 254
 ## USAGE
 
 1 create a njk file in the \_source folder
+
 2 copy an assets folders to the \_source folder (this will pass through)
+
 3 add any vars to \_data/env.js
+
 4 add abd data to \_data/api.js
-5 ./build.sh local / prod
+
+5 create a \_source file if required
+
+6 ./build.sh local / prod
 
 ## SUPPORTS
 
@@ -77,5 +83,6 @@ permalink: /work/{{ contentarray.pageName }}/
 
 ## TODO
 
-permalink: /work/{{ contentarray.title }}/
-outputFolder: work
+TODO permalink: /work/{{ contentarray.title }}/
+TODO outputFolder: work
+TODO add an init funciton that creates \_source file and the others required
