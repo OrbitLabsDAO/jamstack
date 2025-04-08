@@ -1,0 +1,9 @@
+_site
+_includes
+node_modules/
+package-lock.json
+.DS_Store
+.wrangler
+.dev.vars
+.env
+wrangler.toml
