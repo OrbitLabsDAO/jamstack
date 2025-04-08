@@ -5,17 +5,21 @@ const matter = require("gray-matter");
 
 // Get the delete and compress flags from command line arguments
 const args = process.argv.slice(2);
+const action = args[0]; // This will be "ACTION"
+
 const deleteDestFolder = args.includes("delete");
 const compressAssets = args.includes("compress");
 const environment = args.includes("prod") ? "production" : "local";
-
 // Load environment variables
 //check if _data/env.js exists and not set a blank env object
-let getEnvConfig;
 let env = {};
-if (fs.existsSync("./_data/env.js")) {
-  getEnvConfig = require("./_data/env.js");
-  env = getEnvConfig(environment);
+try {
+  if (fs.existsSync("./_data/env.js")) {
+    env = require("./_data/env.js");
+    console.log("✅ env.js file loaded");
+  }
+} catch (err) {
+  console.error("❌ Error loading env.js:", err);
 }
 
 let getapiData;
@@ -30,6 +34,7 @@ if (fs.existsSync("./_data/api.js")) {
     }
   })();
 }
+
 // Proceed with template processing
 processTemplates();
 

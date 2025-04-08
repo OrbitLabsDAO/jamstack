@@ -47,8 +47,6 @@ fi
 # Capture the start time in milliseconds
 start_time=$(get_current_time_in_ms)
 
-echo "Starting build script"
-
 # Check if 'delete' is passed as an argument
 if [[ "ACTION" == *"delete"* ]]; then
     echo "Deleting _site folder..."
@@ -57,7 +55,8 @@ if [[ "ACTION" == *"delete"* ]]; then
 fi
 
 # Execute the build script with any arguments passed to this script
-node buildit.js "ACTION"
+echo "Executing build script with arguments: $ACTION"
+node buildit.js $ACTION
 
 # Capture the end time in milliseconds
 end_time=$(get_current_time_in_ms)
