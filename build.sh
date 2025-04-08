@@ -18,6 +18,11 @@ if [ "ACTION" = "init" ]; then
         mkdir _includes
     fi
 
+    if [ ! -d "_source" ]; then
+        echo "Created _source folder"
+        mkdir _source
+    fi
+
     #copy _env to .env
     if [ ! -f ".env" ]; then
         echo "Created .env file"
