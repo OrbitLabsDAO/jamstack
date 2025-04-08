@@ -26,7 +26,9 @@ It is small and fast have a look at buildit.js (thats the whole thing) it is 254
 
 6 ./build.sh init
 
-7 ./build.sh local / prod
+7 replace the example assets folder in \_source with your own code
+
+8 ./build.sh local / prod
 
 ## SUPPORTS
 
