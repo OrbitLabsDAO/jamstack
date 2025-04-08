@@ -8,6 +8,33 @@ get_current_time_in_ms() {
     date +%s%3N | awk '{ printf "%d\n", $1 }'
 }
 
+if [ "$ACTION" = "init" ]; then
+    if [ ! -d "_includes" ]; then
+        mkdir _includes
+    fi
+
+    if [ ! -d "_source" ]; then
+        mkdir _source
+    fi
+
+    #copy _env to .env
+    if [ ! -f ".env" ]; then
+        cp _env .env
+    fi
+
+    if [ ! -f ".dev.vars" ]; then
+        cp _.dev.vars .dev.vars
+    fi
+
+    #copy _wrangler.toml to wrangler.toml
+    if [ ! -f "wrangler.toml" ]; then
+        cp _wrangler.toml wrangler.toml
+    fi
+
+    exit   
+fi
+
+
 # Capture the start time in milliseconds
 start_time=$(get_current_time_in_ms)
 
