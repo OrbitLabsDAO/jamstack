@@ -1,5 +1,4 @@
 _site
-_source
 _includes
 node_modules/
 package-lock.json
