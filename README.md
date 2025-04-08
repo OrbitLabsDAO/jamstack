@@ -24,7 +24,9 @@ It is small and fast have a look at buildit.js (thats the whole thing) it is 254
 
 5 create a \_source file if required
 
-6 ./build.sh local / prod
+6 ./build.sh init
+
+7 ./build.sh local / prod
 
 ## SUPPORTS
 
