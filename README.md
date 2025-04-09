@@ -84,9 +84,3 @@ alias: contentarray
 output a permalink (over riders title)
 
 permalink: /work/{{ contentarray.pageName }}/
-
-## TODO
-
-TODO permalink: /work/{{ contentarray.title }}/
-TODO outputFolder: work
-TODO add an init funciton that creates \_source file and the others required
