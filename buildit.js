@@ -1,5 +1,3 @@
-//TODO: change branch to master
-
 const fs = require("fs");
 const path = require("path");
 const nunjucks = require("nunjucks");

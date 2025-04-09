@@ -167,7 +167,7 @@ $(document).ready(function () {
       })
       .catch(function (err) {
         // There was an error
-        console.warn("Something went wrong.", err);
+        console.warn("Something went wrong", err);
       });
   };
 
