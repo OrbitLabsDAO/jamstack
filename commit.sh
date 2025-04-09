@@ -1,8 +1,6 @@
 ACTION="${1:-github}" # Default to "build" if no parameter is passed
-BRANCH="${2:-main}"
-
-ACTION="${1:-github}" # Default to "build" if no parameter is passed
 BRANCH="${2:}"
+
 
 if [ "$ACTION" = "origin" ]; then
 
@@ -32,21 +30,7 @@ if [ "$ACTION" = "origin" ]; then
     exit
 fi
 
-
-
-
-if [ "$ACTION" = "github" ]; then
-
-    # Ask for commit message
-    read -p "Enter commit message: " COMMITMESSAGE
-    echo "Doing the all the git things"
-    # Git operations
-    git checkout "$BRANCH"
-    git add .
-    git commit -a -m "$COMMITMESSAGE"
-    git push "$ACTION" "$BRANCH"
-    echo "Done!"
-    exit
-fi
-
 echo "Unknown remote $ACTION"
+
+
+
