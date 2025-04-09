@@ -50,21 +50,3 @@ if [ "$ACTION" = "github" ]; then
 fi
 
 echo "Unknown remote $ACTION"
-
-
-
-if [ "$ACTION" = "github" ]; then
-
-    # Ask for commit message
-    read -p "Enter commit message: " COMMITMESSAGE
-    echo "Doing the all the git things"
-    # Git operations
-    git checkout "$BRANCH"
-    git add .
-    git commit -a -m "$COMMITMESSAGE"
-    git push "$ACTION" "$BRANCH"
-    echo "Done!"
-    exit
-fi
-
-echo "Unknown remote $ACTION"
