@@ -1,7 +1,6 @@
 ACTION="${1:-github}" # Default to "build" if no parameter is passed
 BRANCH="${2:}"
 
-
 if [ "$ACTION" = "origin" ]; then
 
     if [ -n "$BRANCH" ]; then
@@ -30,7 +29,5 @@ if [ "$ACTION" = "origin" ]; then
     exit
 fi
 
+
 echo "Unknown remote $ACTION"
-
-
-
