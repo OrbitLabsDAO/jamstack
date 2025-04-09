@@ -24,8 +24,7 @@ if [ "$ACTION" = "origin" ]; then
     # Restore _source
     mv _site/tmp/_source ./_source
     rmdir _site/tmp 2>/dev/null  # Clean up if empty
-
-
+    echo "Done!"
     exit
 fi
 
