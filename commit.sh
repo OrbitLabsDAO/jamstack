@@ -32,6 +32,11 @@ fi
 
 if [ "$ACTION" = "github" ]; then
 
+    if [ -n "$BRANCH" ]; then
+        echo "Doing branch stuff..."
+        git checkout "$BRANCH"
+    fi
+
     # Ask for commit message
     read -p "Enter commit message: " COMMITMESSAGE
     echo "Doing the all the git things"
