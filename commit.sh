@@ -36,7 +36,7 @@ if [ "$ACTION" = "github" ]; then
     read -p "Enter commit message: " COMMITMESSAGE
     echo "Doing the all the git things"
     # Git operations
-    git checkout "$BRANCH"
+    #git checkout "$BRANCH"
     git add .
     git commit -a -m "$COMMITMESSAGE"
     git push "$ACTION" "$BRANCH"
