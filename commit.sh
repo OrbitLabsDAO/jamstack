@@ -29,7 +29,7 @@ if [ "$ACTION" = "origin" ]; then
 fi
 
 
-
+echo $BRANCH
 if [ "$ACTION" = "github" ]; then
 
     if [ -n "$BRANCH" ]; then
