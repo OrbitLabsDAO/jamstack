@@ -30,21 +30,24 @@ fi
 
 
 if [ "$ACTION" = "github" ]; then
-
     if [ -n "$BRANCH" ]; then
         echo "Doing branch stuff..."
-        git checkout "$BRANCH"
+        git checkout "$BRANCH" 2>/dev/null || echo "⚠️  Warning: Could not switch to branch '$BRANCH'."
+    else
+        echo "⚠️  No branch provided — skipping checkout."
     fi
 
-    # Ask for commit message
     read -p "Enter commit message: " COMMITMESSAGE
-    echo "Doing the all the git things"
-    # Git operations
-    #git checkout "$BRANCH"
     git add .
-    git commit -a -m "$COMMITMESSAGE"
-    git push "$ACTION" "$BRANCH"
-    echo "Done!"
+    git commit -m "$COMMITMESSAGE"
+
+    if [ -n "$BRANCH" ]; then
+        git push "$ACTION" "$BRANCH"
+    else
+        git push "$ACTION"
+    fi
+
+    echo "✅ Done!"
     exit
 fi
 
