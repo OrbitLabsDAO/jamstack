@@ -29,10 +29,9 @@ if [ "$ACTION" = "origin" ]; then
 fi
 
 
-echo $BRANCH
 if [ "$ACTION" = "github" ]; then
 
-    if [ "$BRANCH" != "" ]; then
+    if [ -n "$BRANCH" ]; then
         echo "Doing branch stuff..."
         git checkout "$BRANCH"
     fi
