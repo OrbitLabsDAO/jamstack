@@ -32,7 +32,7 @@ fi
 echo $BRANCH
 if [ "$ACTION" = "github" ]; then
 
-    if [ -n "$BRANCH" ]; then
+    if [ "$BRANCH" != "" ]; then
         echo "Doing branch stuff..."
         git checkout "$BRANCH"
     fi
